@@ -145,7 +145,7 @@ tailwind.config = {
 </style>
 </head>
 <body class="cursor-on bg-ink text-cream antialiased">
-<div id="waha-gate" role="status" aria-live="polite">جاري التحقق من الموقع وتحميل المنيو…</div>
+<div id="waha-gate"><div><p id="waha-gate-message" role="status" aria-live="polite">جاري التحقق من الموقع وتحميل المنيو…</p><a href="/" style="color:#ffb800;text-decoration:underline">دخول إدارة المطعم</a></div></div>
 <div class="waha-demo-note">نسخة تجريبية ببيانات غير حقيقية — الطلب والحجز غير متاحين حالياً</div>
 
 <!-- NOISE -->
@@ -204,6 +204,7 @@ tailwind.config = {
         <a href="#reviews" class="link-underline text-cream/80 hover:text-cream">آراء الضيوف</a>
       </nav>
       <div class="flex items-center gap-2 md:gap-3">
+        <a href="/" class="font-changa font-bold text-sm text-gold border border-gold/40 rounded-xl px-3 py-2 hover:bg-white/10" aria-label="دخول إدارة المطعم">إدارة المطعم</a>
         <button id="cartBtn" class="magnetic relative w-11 h-11 rounded-xl border border-white/15 bg-white/5 grid place-items-center hover:border-fire hover:bg-fire/10 transition-colors" aria-label="السلة">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
           <span id="cartCount" class="absolute -top-2 -left-2 min-w-[22px] h-[22px] px-1 rounded-full bg-fire text-white text-[12px] font-bold grid place-items-center border-2 border-ink scale-0 transition-transform">0</span>
@@ -1015,12 +1016,13 @@ window.openCart=openCart; window.closeCart=closeCart; window.closeBookModal=clos
 <script type="module">
 import {getRestaurantSite} from './farhood-api.mjs';
 const gate=document.getElementById('waha-gate');
+const gateMessage=document.getElementById('waha-gate-message');
 try {
   if(!window.gsap || !window.ScrollTrigger || !window.tailwind || !window.wahaReady) throw new Error('تعذر تحميل مكونات التصميم. تحقق من اتصال الإنترنت وحاول مجدداً.');
   const data=await getRestaurantSite({projectUrl:'https://afjeapvyvreutpiispev.supabase.co',publishableKey:'sb_publishable_GuEDfAxfbfPpThlfhD2Y2A_Emi2M835',slug:'waha-demo'});
-  if(data.status!=='available'){gate.textContent='الموقع غير متاح حالياً. يرجى التواصل مع إدارة المطعم.';}
+  if(data.status!=='available'){gateMessage.textContent='الموقع غير متاح حالياً. يرجى التواصل مع إدارة المطعم.';}
   else {MENU=data.items;setupTabs(MENU);renderMenu();gate.remove();}
-} catch(error){gate.textContent='تعذر تحميل موقع واحة. تحقق من الاتصال وحاول مجدداً.';}
+} catch(error){gateMessage.textContent='تعذر تحميل موقع واحة. تحقق من الاتصال وحاول مجدداً.';}
 </script>
 </body>
 </html>
