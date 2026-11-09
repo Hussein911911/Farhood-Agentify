@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>واحة | نموذج تجريبي عراقي</title>
+<meta name="description" content="واحة — تجربة مشويات استثنائية على الفحم الطبيعي بتصميم تجريبي">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF3D00'><path d='M12 2c1 4-2 6-2 9a4 4 0 008 0c0-1-.5-2-1-3 2 1 3 3 3 6a6 6 0 01-12 0c0-5 3-8 4-12z'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cairo:wght@400;600;700;800;900&family=Changa:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: '#0A0A0A',
+        coal: '#131313',
+        smoke: '#1E1E1E',
+        line: '#2A2A2A',
+        cream: '#FFF6E9',
+        bone: '#F3E8D3',
+        sand: '#E9DCC3',
+        fire: '#FF3D00',
+        ember: '#FF6B00',
+        gold: '#FFB800',
+      },
+      fontFamily: {
+        changa: ['Changa','sans-serif'],
+        cairo: ['Cairo','sans-serif'],
+        anton: ['Anton','Changa','sans-serif'],
+      },
+      boxShadow: {
+        'fire': '0 0 40px rgba(255,61,0,.45), 0 0 120px rgba(255,107,0,.25)',
+        'card': '0 20px 60px rgba(0,0,0,.45)',
+      }
+    }
+  }
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.bundle.min.js"></script>
+<style>
+  *{ -webkit-tap-highlight-color: transparent; }
+  html{ scroll-behavior:auto; }
+  html.lenis, html.lenis body{ height:auto; }
+  .lenis.lenis-smooth{ scroll-behavior:auto !important; }
+  body{ background:#0A0A0A; color:#FFF6E9; font-family:'Cairo',sans-serif; overflow-x:hidden; }
+  ::selection{ background:#FF3D00; color:#fff; }
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:#0A0A0A; }
+  ::-webkit-scrollbar-thumb{ background:linear-gradient(#FF3D00,#FFB800); border-radius:99px; }
+  .font-mega{ font-family:'Changa',sans-serif; font-weight:800; }
+  .mega{ font-size:clamp(7rem,24vw,22rem); line-height:.82; letter-spacing:-.02em; }
+  .mega-sm{ font-size:clamp(3.2rem,10vw,8.5rem); line-height:.9; }
+  .outline-cream{ -webkit-text-stroke:2px rgba(255,246,233,.85); color:transparent; }
+  .outline-fire{ -webkit-text-stroke:2px #FF3D00; color:transparent; }
+  .outline-black{ -webkit-text-stroke:2.5px #0A0A0A; color:transparent; }
+  .outline-faint{ -webkit-text-stroke:1.5px rgba(255,246,233,.22); color:transparent; }
+  @media(max-width:640px){ .outline-cream,.outline-fire{ -webkit-text-stroke-width:1.3px; } .outline-black{ -webkit-text-stroke-width:1.6px; } }
+
+  /* noise */
+  .noise{ position:fixed; inset:0; z-index:70; pointer-events:none; opacity:.07; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* cursor */
+  #cursor-dot,#cursor-ring{ position:fixed; top:0; left:0; pointer-events:none; z-index:9999; border-radius:50%; transform:translate(-50%,-50%); }
+  #cursor-dot{ width:8px; height:8px; background:#FF3D00; box-shadow:0 0 20px #FF3D00; }
+  #cursor-ring{ width:42px; height:42px; border:2px solid rgba(255,184,0,.9); transition:width .25s,height .25s,background .25s,border .25s; display:flex; align-items:center; justify-content:center; }
+  #cursor-ring.hovered{ width:88px; height:88px; background:rgba(255,61,0,.15); backdrop-filter:blur(2px); border-color:#FF3D00; }
+  #cursor-label{ font-size:11px; font-weight:800; color:#FFB800; opacity:0; font-family:'Changa'; letter-spacing:.1em; }
+  #cursor-ring.hovered #cursor-label{ opacity:1; }
+  @media(pointer:fine){ body.cursor-on, body.cursor-on a, body.cursor-on button, body.cursor-on input, body.cursor-on textarea, body.cursor-on select, body.cursor-on label{ cursor:none !important; } }
+  @media(pointer:coarse){ #cursor-dot,#cursor-ring{ display:none; } }
+
+  /* marquee */
+  .marquee-track{ display:flex; width:max-content; animation:marquee 22s linear infinite; }
+  .marquee-track.fast{ animation-duration:14s; }
+  .marquee-track.slow{ animation-duration:34s; }
+  .marquee-track.reverse{ animation-direction:reverse; }
+  @keyframes marquee{ 0%{transform:translateX(0)} 100%{transform:translateX(50%)} }
+  .marquee-paused:hover .marquee-track{ animation-play-state:paused; }
+
+  @keyframes spin-slow{ to{ transform:rotate(360deg);} }
+  .spin-slow{ animation:spin-slow 14s linear infinite; }
+  .spin-slower{ animation:spin-slow 28s linear infinite; }
+  @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
+  .float{ animation:float 5s ease-in-out infinite; }
+  @keyframes flicker{ 0%,100%{transform:scale(1) rotate(-2deg); filter:drop-shadow(0 0 18px rgba(255,61,0,.8))} 25%{transform:scale(1.08) rotate(2deg)} 50%{transform:scale(.96) rotate(-1deg); filter:drop-shadow(0 0 34px rgba(255,184,0,.9))} 75%{transform:scale(1.05) rotate(1deg)} }
+  .flame{ animation:flicker 1.6s ease-in-out infinite; transform-origin:bottom center; }
+  @keyframes pulse-glow{ 0%,100%{ text-shadow:0 0 30px rgba(255,61,0,.6),0 0 90px rgba(255,61,0,.3);} 50%{ text-shadow:0 0 60px rgba(255,184,0,.8),0 0 140px rgba(255,61,0,.5);} }
+  .glow-fire{ animation:pulse-glow 3.5s ease-in-out infinite; }
+  @keyframes scroll-dot{ 0%{transform:translateY(0); opacity:1} 70%{transform:translateY(38px); opacity:0} 100%{transform:translateY(0); opacity:0} }
+  .scroll-dot{ animation:scroll-dot 1.8s ease-in-out infinite; }
+  @keyframes shimmer{ 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+  .shimmer{ background:linear-gradient(110deg,#FF3D00 20%,#FFB800 40%,#fff 50%,#FFB800 60%,#FF3D00 80%); background-size:200% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmer 3s linear infinite; }
+
+  .card-img{ transition:transform .8s cubic-bezier(.16,1,.3,1), filter .5s; }
+  .menu-card:hover .card-img{ transform:scale(1.12) rotate(1deg); filter:saturate(1.3) contrast(1.1); }
+  .menu-card{ transition:transform .5s cubic-bezier(.16,1,.3,1), border-color .3s, box-shadow .4s; }
+  .menu-card:hover{ transform:translateY(-10px); box-shadow:0 30px 70px rgba(255,61,0,.18), 0 20px 50px rgba(0,0,0,.6); border-color:rgba(255,61,0,.6) !important; }
+  .btn-fire{ position:relative; overflow:hidden; isolation:isolate; }
+  .btn-fire::after{ content:''; position:absolute; inset:0; background:linear-gradient(90deg,#FFB800,#FF6B00); transform:translateX(101%); transition:transform .45s cubic-bezier(.16,1,.3,1); z-index:-1; }
+  html[dir="rtl"] .btn-fire::after{ transform:translateX(-101%); }
+  .btn-fire:hover::after{ transform:translateX(0); }
+  .link-underline{ position:relative; }
+  .link-underline::after{ content:''; position:absolute; bottom:-4px; right:0; width:0; height:2px; background:#FF3D00; transition:width .35s; }
+  .link-underline:hover::after, .link-underline.active::after{ width:100%; }
+
+  .grain-card{ background:linear-gradient(145deg,#171717,#0e0e0e); border:1px solid #2a2a2a; }
+  .tab-btn{ transition:all .35s cubic-bezier(.16,1,.3,1); }
+  .tab-btn.active{ background:#FF3D00; color:#fff; border-color:#FF3D00; box-shadow:0 10px 30px rgba(255,61,0,.4); transform:scale(1.05); }
+
+  .time-pill.active{ background:#FFB800; color:#0A0A0A; border-color:#FFB800; box-shadow:0 0 20px rgba(255,184,0,.5); }
+  .size-btn.active{ background:#0A0A0A; color:#FFF6E9; border-color:#0A0A0A; }
+
+  .gallery-scroll{ scrollbar-width:none; -ms-overflow-style:none; cursor:grab; }
+  .gallery-scroll::-webkit-scrollbar{ display:none; }
+  .gallery-scroll:active{ cursor:grabbing; }
+
+  .clip-reveal{ clip-path:inset(0 0 100% 0); }
+  input,select,textarea{ outline:none; }
+  input:focus,select:focus,textarea:focus{ border-color:#FF3D00 !important; box-shadow:0 0 0 3px rgba(255,61,0,.2); }
+
+  .ticket-edge{ --notch:18px; mask:radial-gradient(circle var(--notch) at 0 50%, transparent 98%, black 100%) left /51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 50%, transparent 98%, black 100%) right /51% 100% no-repeat; mask-composite:intersect; -webkit-mask:radial-gradient(circle var(--notch) at 0 50%, transparent 98%, black 100%) left /51% 100% no-repeat, radial-gradient(circle var(--notch) at 100% 50%, transparent 98%, black 100%) right /51% 100% no-repeat; }
+
+  .step-card{ transition:all .5s cubic-bezier(.16,1,.3,1); }
+  .step-card:hover{ background:#FF3D00; transform:translateY(-12px) rotate(-1deg); border-color:#FF3D00; }
+  .step-card:hover .step-num{ -webkit-text-stroke-color:#fff; }
+  .step-card:hover p, .step-card:hover h4{ color:#fff !important; }
+  .step-card:hover .step-icon{ background:#fff; color:#FF3D00; }
+
+  #preloader{ clip-path:inset(0 0 0 0); }
+  .char{ display:inline-block; transform:translateY(110%); }
+  .split-line{ overflow:hidden; display:block; }
+
+  @media(max-width:768px){ .mega{ font-size:clamp(5rem,28vw,9rem);} }
+
+  /* This is a read-only demo; ordering, reservations and fabricated social proof are hidden. */
+  #signature,#reserve,#reviews,#cartBtn,#waha-cta,#waha-news,footer a[href^="http"],a[href="#reserve"],a[href="#signature"],a[href="#reviews"],button[onclick*="openCart"]{display:none !important}
+  #waha-gate{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;text-align:center;padding:25px;background:#0A0A0A;color:#FFF6E9;font:18px Cairo,Tahoma,sans-serif;line-height:2}
+  .waha-demo-note{position:fixed;bottom:0;right:0;left:0;z-index:85;background:#332111;color:#ffcf82;text-align:center;padding:8px 12px;font-size:12px;line-height:1.5}
+  .waha-menu-card img{width:100%;height:190px;object-fit:cover}.waha-menu-card .info{padding:20px}.waha-menu-card h3{font-size:20px;font-weight:800;margin:0}.waha-menu-card p{color:#b5aaa0;margin:8px 0}.waha-menu-card strong{color:#ffb800;font-size:20px}.waha-menu-card{background:#131313;border:1px solid #2a2a2a;border-radius:20px;overflow:hidden}
+</style>
+</head>
+<body class="cursor-on bg-ink text-cream antialiased">
+<div id="waha-gate" role="status" aria-live="polite">جاري التحقق من الموقع وتحميل المنيو…</div>
+<div class="waha-demo-note">نسخة تجريبية ببيانات غير حقيقية — الطلب والحجز غير متاحين حالياً</div>
+
+<!-- NOISE -->
+<div class="noise"></div>
+
+<!-- CURSOR -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"><span id="cursor-label">اسحب</span></div>
+
+<!-- SCROLL PROGRESS -->
+<div class="fixed top-0 right-0 left-0 h-[4px] z-[90] bg-transparent"><div id="progressBar" class="h-full w-full origin-right scale-x-0 bg-gradient-to-l from-fire via-ember to-gold"></div></div>
+
+<!-- PRELOADER -->
+<div id="preloader" class="fixed inset-0 z-[999] bg-ink flex flex-col items-center justify-center overflow-hidden">
+  <div class="absolute inset-0 opacity-20">
+    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover blur-sm scale-110" alt="">
+    <div class="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-ink"></div>
+  </div>
+  <div class="relative z-10 flex flex-col items-center">
+    <div class="flame mb-4">
+      <svg width="72" height="72" viewBox="0 0 24 24" fill="none"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z" fill="url(#g)"/><defs><linearGradient id="g" x1="4" y1="2" x2="21" y2="23" gradientUnits="userSpaceOnUse"><stop stop-color="#FFB800"/><stop offset=".5" stop-color="#FF6B00"/><stop offset="1" stop-color="#FF3D00"/></linearGradient></defs></svg>
+    </div>
+    <h1 class="font-mega text-[clamp(4rem,14vw,9rem)] leading-none">واحة</h1>
+    <p class="font-anton tracking-[.5em] text-gold text-sm mt-2 ml-[-.5em]" dir="ltr">W A H A • DEMO</p>
+    <div class="mt-8 w-[280px] md:w-[360px]">
+      <div class="flex justify-between items-end mb-2 font-changa">
+        <span class="text-sm text-cream/60">جاري إشعال الفحم...</span>
+        <span id="loadNum" class="text-3xl font-bold text-gold font-anton" dir="ltr">0%</span>
+      </div>
+      <div class="h-[6px] bg-smoke rounded-full overflow-hidden border border-line">
+        <div id="loadBar" class="h-full w-0 bg-gradient-to-l from-gold via-ember to-fire rounded-full"></div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute bottom-6 font-changa text-cream/40 text-sm tracking-widest">نار • فحم • نكهة</div>
+</div>
+
+<!-- NAV -->
+<header id="nav" class="fixed top-0 right-0 left-0 z-[80] transition-all duration-500">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8">
+    <div id="navInner" class="mt-3 md:mt-4 flex items-center justify-between rounded-2xl px-4 md:px-6 py-3 border border-white/10 bg-ink/60 backdrop-blur-xl transition-all duration-500">
+      <a href="#hero" class="flex items-center gap-3 group">
+        <span class="w-11 h-11 rounded-xl bg-gradient-to-br from-fire to-gold grid place-items-center shadow-fire group-hover:rotate-12 transition-transform duration-300">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg>
+        </span>
+        <span class="leading-none">
+          <span class="block font-mega text-2xl md:text-3xl">واحة</span>
+          <span class="block font-anton text-[10px] tracking-[.4em] text-gold" dir="ltr">WAHA GRILL</span>
+        </span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-8 font-changa font-semibold text-[15px]">
+        <a href="#about" class="link-underline text-cream/80 hover:text-cream">قصتنا</a>
+        <a href="#menu" class="link-underline text-cream/80 hover:text-cream">المنيو</a>
+        <a href="#signature" class="link-underline text-cream/80 hover:text-cream">الطبق الملكي</a>
+        <a href="#gallery" class="link-underline text-cream/80 hover:text-cream">الأجواء</a>
+        <a href="#reviews" class="link-underline text-cream/80 hover:text-cream">آراء الضيوف</a>
+      </nav>
+      <div class="flex items-center gap-2 md:gap-3">
+        <button id="cartBtn" class="magnetic relative w-11 h-11 rounded-xl border border-white/15 bg-white/5 grid place-items-center hover:border-fire hover:bg-fire/10 transition-colors" aria-label="السلة">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span id="cartCount" class="absolute -top-2 -left-2 min-w-[22px] h-[22px] px-1 rounded-full bg-fire text-white text-[12px] font-bold grid place-items-center border-2 border-ink scale-0 transition-transform">0</span>
+        </button>
+        <a href="#reserve" class="magnetic btn-fire hidden sm:inline-flex items-center gap-2 bg-fire text-white font-changa font-bold px-5 md:px-6 py-2.5 rounded-xl text-sm md:text-base">
+          احجز طاولة
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+        </a>
+        <button id="menuBtn" class="lg:hidden w-11 h-11 rounded-xl border border-white/15 bg-white/5 grid place-items-center" aria-label="القائمة">
+          <div class="space-y-1.5"><span id="mb1" class="block w-5 h-[2px] bg-cream transition-all"></span><span id="mb2" class="block w-5 h-[2px] bg-gold transition-all"></span><span id="mb3" class="block w-3 h-[2px] bg-cream transition-all ml-auto"></span></div>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobileMenu" class="fixed inset-0 z-[75] bg-ink/95 backdrop-blur-2xl hidden">
+  <div class="absolute inset-0 opacity-10"><img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover" alt=""></div>
+  <div class="relative h-full flex flex-col justify-center px-8 pt-20">
+    <p class="font-anton text-fire tracking-[.3em] text-sm mb-4" dir="ltr">MENU</p>
+    <nav class="space-y-1 font-mega text-5xl sm:text-6xl">
+      <a href="#about" class="mob-link block py-2 hover:text-fire transition-colors border-b border-white/10">قصتنا <span class="text-base text-gold font-cairo align-top">01</span></a>
+      <a href="#menu" class="mob-link block py-2 hover:text-fire transition-colors border-b border-white/10">المنيو <span class="text-base text-gold font-cairo align-top">02</span></a>
+      <a href="#signature" class="mob-link block py-2 hover:text-fire transition-colors border-b border-white/10">الطبق الملكي <span class="text-base text-gold font-cairo align-top">03</span></a>
+      <a href="#gallery" class="mob-link block py-2 hover:text-fire transition-colors border-b border-white/10">الأجواء <span class="text-base text-gold font-cairo align-top">04</span></a>
+      <a href="#reserve" class="mob-link block py-2 text-fire">احجز الآن <span class="text-base text-cream font-cairo align-top">05</span></a>
+    </nav>
+    <div class="mt-8 flex items-center gap-4 text-cream/60 font-changa text-sm">
+      <span>بغداد — عنوان تجريبي</span><span class="w-1 h-1 rounded-full bg-fire"></span><span dir="ltr">رقم تجريبي غير متاح</span>
+    </div>
+  </div>
+</div>
+
+<!-- CART DRAWER -->
+<div id="cartOverlay" class="fixed inset-0 z-[85] bg-black/70 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-400"></div>
+<aside id="cartDrawer" class="fixed top-0 left-0 h-full w-full max-w-[420px] z-[86] bg-coal border-r border-line flex flex-col -translate-x-full transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)]">
+  <div class="p-5 border-b border-line flex items-center justify-between bg-ink">
+    <div><h3 class="font-mega text-2xl">سلة الطلب <span class="text-fire">.</span></h3><p class="text-cream/50 text-sm font-changa">كل اللي اشتهيته، بضغطة زر</p></div>
+    <button id="cartClose" class="w-10 h-10 rounded-xl bg-smoke grid place-items-center hover:bg-fire transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div id="cartItems" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+  <div class="p-5 border-t border-line bg-ink space-y-4">
+    <div class="flex justify-between font-changa"><span class="text-cream/60">المجموع الفرعي</span><span id="cartSubtotal" class="font-bold">0 د.ع</span></div>
+    <div class="flex justify-between font-changa"><span class="text-cream/60">التوصيل</span><span class="text-gold font-bold">مجاني للطلبات +100</span></div>
+    <div class="flex justify-between items-center text-xl font-mega border-t border-dashed border-line pt-3"><span>الإجمالي</span><span id="cartTotal" class="text-fire text-2xl">0 د.ع</span></div>
+    <button id="checkoutBtn" class="btn-fire w-full bg-fire text-white font-mega text-xl py-4 rounded-2xl flex items-center justify-center gap-2">
+      تأكيد الطلب
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+    </button>
+  </div>
+</aside>
+
+<main>
+<!-- ============ HERO ============ -->
+<section id="hero" class="relative min-h-[100svh] flex flex-col justify-end overflow-hidden bg-ink">
+  <div class="absolute inset-0">
+    <img id="heroBg" src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=1920&auto=format&fit=crop" class="w-full h-full object-cover scale-110" alt="مشويات واحة">
+    <div class="absolute inset-0 bg-gradient-to-b from-ink/80 via-ink/40 to-ink"></div>
+    <div class="absolute inset-0 bg-gradient-to-l from-ink/80 via-transparent to-ink/60"></div>
+    <div class="absolute bottom-0 right-0 left-0 h-64 bg-gradient-to-t from-fire/20 to-transparent"></div>
+  </div>
+  <canvas id="embers" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+  <!-- giant latin behind -->
+  <div class="absolute top-[16%] left-0 right-0 text-center pointer-events-none select-none" dir="ltr">
+    <span id="heroLatin" class="font-anton text-[clamp(4rem,17vw,15rem)] leading-none outline-faint opacity-70 tracking-tight">WAHA • FIRE</span>
+  </div>
+
+  <div class="relative z-10 max-w-[1400px] mx-auto w-full px-4 md:px-8 pt-32 pb-6">
+    <div class="flex flex-col lg:flex-row lg:items-end gap-8">
+      <div class="flex-1">
+        <div id="heroBadge" class="inline-flex items-center gap-2 border border-gold/40 bg-gold/10 backdrop-blur rounded-full px-4 py-2 font-changa text-sm mb-5">
+          <span class="w-2 h-2 rounded-full bg-fire animate-pulse"></span>
+          <span class="text-gold font-bold">مطعم مشويات فاخر</span>
+          <span class="text-cream/50">•</span><span class="text-cream/80">أوقات العمل تجريبية</span>
+        </div>
+        <h1 class="font-mega mega glow-fire text-cream leading-[.85]">
+          <span class="split-line"><span class="char">واحة</span></span>
+        </h1>
+        <div class="flex flex-wrap items-center gap-3 mt-4">
+          <span class="font-anton text-2xl md:text-4xl outline-cream tracking-wide" dir="ltr">WHERE FIRE</span>
+          <span class="font-anton text-2xl md:text-4xl text-fire tracking-wide" dir="ltr">MEETS FLAVOR</span>
+        </div>
+        <p id="heroDesc" class="mt-5 max-w-[560px] text-cream/70 text-base md:text-lg leading-relaxed font-cairo">
+          من قلب النار إلى قلبك. لحوم فاخرة مختارة يومياً، تُتبّل بخلطتنا السرية بتصميم تجريبي، وتُشوى على الفحم الطبيعي لتذوب في فمك. هذه ليست وجبة... هذه <span class="text-gold font-bold">طقوس نار</span>.
+        </p>
+        <div id="heroCta" class="mt-7 flex flex-wrap items-center gap-3">
+          <a href="#reserve" class="magnetic btn-fire bg-fire text-white font-mega text-lg px-8 py-4 rounded-2xl shadow-fire inline-flex items-center gap-3">
+            احجز طاولتك الآن
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg>
+          </a>
+          <a href="#menu" class="magnetic border-2 border-cream/25 hover:border-gold hover:text-gold font-mega text-lg px-8 py-[14px] rounded-2xl backdrop-blur transition-colors inline-flex items-center gap-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V4H6.5A2.5 2.5 0 0 0 4 6.5v13z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+            استكشف المنيو
+          </a>
+          <div class="flex items-center gap-3 mr-2">
+            <div class="flex -space-x-3 space-x-reverse">
+              <img src="https://i.pravatar.cc/64?img=12" class="w-10 h-10 rounded-full border-2 border-ink object-cover" alt="">
+              <img src="https://i.pravatar.cc/64?img=32" class="w-10 h-10 rounded-full border-2 border-ink object-cover" alt="">
+              <img src="https://i.pravatar.cc/64?img=56" class="w-10 h-10 rounded-full border-2 border-ink object-cover" alt="">
+              <span class="w-10 h-10 rounded-full bg-gold text-ink text-xs font-bold grid place-items-center border-2 border-ink">+250K</span>
+            </div>
+            <div class="text-sm leading-tight"><div class="text-gold font-bold flex items-center gap-1">★★★★★ <span>4.9</span></div><div class="text-cream/60 font-changa">أرقام توضيحية للتصميم</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- rotating badge + fire card -->
+      <div class="hidden lg:flex flex-col items-center gap-6 pb-4">
+        <div class="relative w-40 h-40">
+          <svg viewBox="0 0 200 200" class="w-full h-full spin-slow">
+            <defs><path id="circlePath" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/></defs>
+            <text class="fill-gold" style="font-family:Changa;font-size:19px;font-weight:700;letter-spacing:3px"><textPath href="#circlePath">مشويات على الفحم • بتصميم تجريبي • واحة •</textPath></text>
+          </svg>
+          <div class="absolute inset-0 grid place-items-center"><span class="w-16 h-16 rounded-full bg-fire grid place-items-center shadow-fire flame"><svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span></div>
+        </div>
+        <div class="grain-card rounded-2xl p-4 w-56 text-center backdrop-blur">
+          <p class="font-anton text-gold text-3xl" dir="ltr">100%</p>
+          <p class="font-changa text-sm text-cream/70">فحم طبيعي • بدون غاز أبداً</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- info strip -->
+    <div id="heroStrip" class="mt-8 grid grid-cols-2 md:grid-cols-4 border-t border-white/15 pt-5 gap-4 font-changa text-sm">
+      <div class="flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 grid place-items-center text-fire"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><p class="text-cream/50 text-xs">الموقع</p><p class="font-bold">بغداد — عنوان تجريبي</p></div></div>
+      <div class="flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 grid place-items-center text-gold"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><div><p class="text-cream/50 text-xs">الدوام يومياً</p><p class="font-bold" dir="ltr">12:00 PM — 12:00 AM</p></div></div>
+      <div class="hidden md:flex items-center gap-3"><span class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 grid place-items-center text-fire"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span><div><p class="text-cream/50 text-xs">الشواء</p><p class="font-bold">فحم غضى طبيعي 100%</p></div></div>
+      <div class="flex items-center justify-end gap-3">
+        <span class="font-changa text-cream/50 text-xs hidden sm:block">اسحب للأسفل</span>
+        <span class="w-[26px] h-[56px] rounded-full border-2 border-cream/25 flex justify-center pt-2"><span class="scroll-dot w-1.5 h-1.5 rounded-full bg-fire"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 1 -->
+<div class="bg-fire text-ink py-4 overflow-hidden border-y-4 border-ink relative z-10 marquee-paused" dir="ltr">
+  <div class="marquee-track fast gap-0 font-mega text-2xl md:text-4xl whitespace-nowrap">
+    <span class="px-4">مشويات على الفحم ✦ لحم وقيو فاخر ✦ تتبيلة سرية بتصميم تجريبي ✦ نكهة مشويات ✦ مشويات على الفحم ✦ لحم وقيو فاخر ✦ تتبيلة سرية بتصميم تجريبي ✦ نكهة مشويات ✦&nbsp;</span>
+    <span class="px-4">مشويات على الفحم ✦ لحم وقيو فاخر ✦ تتبيلة سرية بتصميم تجريبي ✦ نكهة مشويات ✦ مشويات على الفحم ✦ لحم وقيو فاخر ✦ تتبيلة سرية بتصميم تجريبي ✦ نكهة مشويات ✦&nbsp;</span>
+  </div>
+</div>
+
+<!-- INTRO / STATS cream -->
+<section class="bg-cream text-ink relative overflow-hidden">
+  <div class="absolute top-10 left-0 font-anton text-[18vw] leading-none outline-black opacity-[.06] select-none pointer-events-none" dir="ltr">SINCE 1999</div>
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-24">
+    <div class="flex flex-col lg:flex-row gap-10 lg:items-end justify-between">
+      <div class="max-w-[760px]">
+        <p data-reveal class="inline-flex items-center gap-2 bg-ink text-cream font-changa text-sm px-4 py-1.5 rounded-full mb-5"><span class="w-2 h-2 bg-fire rounded-full animate-pulse"></span> أهلاً بك في واحة النار</p>
+        <h2 data-reveal class="font-mega mega-sm">نار <span class="text-fire">..</span> فحم <span class="text-fire">..</span><br>نكهة <span class="relative inline-block">لا تُنسى<svg class="absolute -bottom-2 right-0 w-full" height="12" viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M2 9C60 2 140 2 198 8" stroke="#FF3D00" stroke-width="6" stroke-linecap="round" fill="none"/></svg></span></h2>
+      </div>
+      <p data-reveal class="max-w-[380px] text-ink/70 leading-relaxed font-cairo">أكثر من ربع قرن ونحن نشعل الفحم كل صباح من أجل لحظة واحدة: أول قضمة تأخذك لعالم ثاني. لا غاز، لا اختصارات — فقط نار حقيقية وصبر وحب.</p>
+    </div>
+    <div class="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+      <div data-reveal class="bg-ink text-cream rounded-3xl p-6 md:p-8 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500">
+        <span class="absolute -left-4 -bottom-6 font-anton text-8xl text-white/5 group-hover:text-fire/20 transition-colors" dir="ltr">27</span>
+        <p class="font-anton text-5xl md:text-6xl text-gold" dir="ltr"><span data-count="27">0</span>+</p>
+        <p class="font-changa mt-2 text-cream/70">سنة من إشعال النار</p><div class="mt-4 h-1 rounded-full bg-white/10 overflow-hidden"><div class="h-full w-0 bg-fire rounded-full bar-anim" data-w="90%"></div></div>
+      </div>
+      <div data-reveal class="bg-fire text-white rounded-3xl p-6 md:p-8 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500 shadow-fire">
+        <span class="absolute -left-4 -bottom-6 font-anton text-8xl text-white/10" dir="ltr">85</span>
+        <p class="font-anton text-5xl md:text-6xl" dir="ltr"><span data-count="85">0</span></p>
+        <p class="font-changa mt-2 text-white/90">طبق مميز في المنيو</p><div class="mt-4 h-1 rounded-full bg-white/20 overflow-hidden"><div class="h-full w-0 bg-white rounded-full bar-anim" data-w="75%"></div></div>
+      </div>
+      <div data-reveal class="bg-white border-2 border-ink rounded-3xl p-6 md:p-8 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500">
+        <span class="absolute -left-4 -bottom-6 font-anton text-8xl text-ink/5" dir="ltr">250</span>
+        <p class="font-anton text-5xl md:text-6xl" dir="ltr"><span data-count="250">0</span>K</p>
+        <p class="font-changa mt-2 text-ink/60">ضيف سعيد سنوياً</p><div class="mt-4 h-1 rounded-full bg-ink/10 overflow-hidden"><div class="h-full w-0 bg-ink rounded-full bar-anim" data-w="95%"></div></div>
+      </div>
+      <div data-reveal class="bg-gold text-ink rounded-3xl p-6 md:p-8 relative overflow-hidden group hover:-translate-y-2 transition-transform duration-500">
+        <span class="absolute -left-4 -bottom-6 font-anton text-8xl text-ink/10" dir="ltr">4.9</span>
+        <p class="font-anton text-5xl md:text-6xl" dir="ltr">4.9</p>
+        <p class="font-changa mt-2 text-ink/70">تقييم ضيوفنا ★★★★★</p><div class="mt-4 h-1 rounded-full bg-ink/15 overflow-hidden"><div class="h-full w-0 bg-ink rounded-full bar-anim" data-w="98%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="bg-ink relative overflow-hidden">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-28 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <div class="relative order-2 lg:order-1">
+      <div class="grid grid-cols-12 gap-4">
+        <div data-reveal class="col-span-7 rounded-3xl overflow-hidden border border-line h-[420px] md:h-[540px] relative group">
+          <img data-parallax src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop" class="w-full h-[120%] object-cover card-img" alt="ريش مشوية">
+          <div class="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent"></div>
+          <span class="absolute bottom-4 right-4 bg-fire text-white font-changa text-sm px-3 py-1 rounded-full">شواء حي أمامك</span>
+        </div>
+        <div class="col-span-5 space-y-4">
+          <div data-reveal class="rounded-3xl overflow-hidden border border-line h-[200px] md:h-[260px]"><img data-parallax src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=600&auto=format&fit=crop" class="w-full h-[120%] object-cover card-img" alt="فحم"></div>
+          <div data-reveal class="rounded-3xl overflow-hidden border border-fire/40 h-[200px] md:h-[260px] relative">
+            <img src="https://images.unsplash.com/photo-1558030006-450675393462?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt="لحم">
+            <div class="absolute inset-0 bg-fire/20"></div>
+          </div>
+        </div>
+      </div>
+      <div data-reveal class="absolute -bottom-6 right-6 md:right-10 bg-gold text-ink rounded-2xl px-6 py-4 shadow-card flex items-center gap-4 rotate-[-3deg]">
+        <p class="font-anton text-5xl leading-none" dir="ltr">27</p>
+        <div class="font-changa leading-tight"><p class="font-bold">سنة خبرة</p><p class="text-sm opacity-70">في فن المشويات</p></div>
+      </div>
+      <div class="absolute -top-6 -left-2 md:left-6 bg-cream text-ink rounded-2xl px-5 py-3 shadow-card rotate-[3deg] flex items-center gap-2">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="#FF3D00"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z"/></svg>
+        <span class="font-mega">أفضل مشويات 2025</span>
+      </div>
+    </div>
+    <div class="order-1 lg:order-2">
+      <p data-reveal class="font-anton tracking-[.3em] text-fire text-sm mb-4" dir="ltr">— OUR STORY</p>
+      <h2 data-reveal class="font-mega text-4xl md:text-6xl leading-[1.05]">حكاية نار بدأت<br>من قلب <span class="text-fire glow-fire">الصحراء</span></h2>
+      <p data-reveal class="mt-6 text-cream/65 leading-loose">في 1999، بدأ الوالد "أبو فهد" بعربة فحم صغيرة وحلم كبير: أن يقدّم المشويات كما يجب أن تكون. اليوم، واحة أصبحت وجهة عشاق اللحم الأولى — بنفس الفحم، ونفس الشغف، ونفس الوصفة السرية التي لا يعرفها إلا ثلاثة أشخاص.</p>
+      <div class="mt-8 grid sm:grid-cols-2 gap-3">
+        <div data-reveal class="flex items-center gap-3 bg-smoke border border-line rounded-2xl p-4 hover:border-fire/50 transition-colors"><span class="w-11 h-11 rounded-xl bg-fire/15 text-fire grid place-items-center shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span><div><p class="font-bold font-changa">فحم طبيعي 100%</p><p class="text-sm text-cream/50">غضى وسمر فاخر</p></div></div>
+        <div data-reveal class="flex items-center gap-3 bg-smoke border border-line rounded-2xl p-4 hover:border-fire/50 transition-colors"><span class="w-11 h-11 rounded-xl bg-gold/15 text-gold grid place-items-center shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></span><div><p class="font-bold font-changa">لحوم طازجة يومياً</p><p class="text-sm text-cream/50">من مزارع موثوقة</p></div></div>
+        <div data-reveal class="flex items-center gap-3 bg-smoke border border-line rounded-2xl p-4 hover:border-fire/50 transition-colors"><span class="w-11 h-11 rounded-xl bg-fire/15 text-fire grid place-items-center shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8L12 2z"/></svg></span><div><p class="font-bold font-changa">وصفات عائلية سرية</p><p class="text-sm text-cream/50">27 سنة من الإتقان</p></div></div>
+        <div data-reveal class="flex items-center gap-3 bg-smoke border border-line rounded-2xl p-4 hover:border-fire/50 transition-colors"><span class="w-11 h-11 rounded-xl bg-gold/15 text-gold grid place-items-center shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span><div><p class="font-bold font-changa">شيفات محترفين</p><p class="text-sm text-cream/50">14 شيف شواء</p></div></div>
+      </div>
+      <div data-reveal class="mt-8 flex flex-wrap items-center gap-5">
+        <a href="#menu" class="magnetic btn-fire bg-cream text-ink font-mega text-lg px-8 py-3.5 rounded-2xl inline-flex items-center gap-2">جرّب بنفسك
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a>
+        <div class="flex items-center gap-3"><img src="https://i.pravatar.cc/80?img=13" class="w-12 h-12 rounded-full border-2 border-fire object-cover" alt="الشيف"><div><p class="font-mega">الشيف أبو فهد</p><p class="text-sm text-cream/50 font-changa">المؤسس وكبير الشيفات</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="bg-ink py-5 overflow-hidden border-y border-line" dir="ltr">
+  <div class="marquee-track slow font-anton text-5xl md:text-7xl whitespace-nowrap">
+    <span class="px-6 outline-faint">GRILL • FIRE • WAHA • SMOKE • TASTE • GRILL • FIRE • WAHA • SMOKE • TASTE •&nbsp;</span>
+    <span class="px-6 outline-faint">GRILL • FIRE • WAHA • SMOKE • TASTE • GRILL • FIRE • WAHA • SMOKE • TASTE •&nbsp;</span>
+  </div>
+</div>
+
+<!-- MENU -->
+<section id="menu" class="bg-coal relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-fire/10 blur-[140px] rounded-full pointer-events-none"></div>
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-24 relative">
+    <div class="text-center max-w-[700px] mx-auto">
+      <p data-reveal class="font-anton tracking-[.35em] text-gold text-sm mb-3" dir="ltr">— TASTE THE FIRE —</p>
+      <h2 data-reveal class="font-mega mega-sm">المنيو <span class="outline-fire">الناري</span></h2>
+      <p data-reveal class="text-cream/60 mt-4">اختر مزاجك — كل طبق يُشوى لحظة الطلب على فحم مشتعل. لا شيء جاهز، كل شيء حي.</p>
+    </div>
+    <div data-reveal class="mt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex flex-wrap justify-center gap-2 md:gap-3" id="tabs">
+        <button data-filter="all" class="tab-btn active font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">الكل 🔥</button>
+        <button data-filter="grill" class="tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">مشويات</button>
+        <button data-filter="chicken" class="tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">دجاج</button>
+        <button data-filter="mezze" class="tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">مقبلات</button>
+        <button data-filter="dessert" class="tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">حلويات</button>
+        <button data-filter="drinks" class="tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base">مشروبات</button>
+      </div>
+      <div class="relative w-full md:w-[280px]">
+        <input id="menuSearch" type="text" placeholder="دوّر على طبق..." class="w-full bg-ink border border-line rounded-full py-3 pr-11 pl-4 font-changa text-sm placeholder:text-cream/30 transition-all">
+        <svg class="absolute right-4 top-1/2 -translate-y-1/2 text-cream/40" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+    </div>
+    <div id="menuGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5"></div>
+    <p id="menuEmpty" class="hidden text-center py-16 font-changa text-cream/50 text-lg">لا توجد نتائج مطابقة... جرّب كلمة ثانية</p>
+  </div>
+</section>
+
+<!-- SIGNATURE -->
+<section id="signature" class="bg-cream text-ink relative overflow-hidden">
+  <div class="absolute bottom-0 right-0 font-anton text-[16vw] leading-none text-ink/[.04] select-none pointer-events-none" dir="ltr">LEGENDARY</div>
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center relative">
+    <div class="relative flex justify-center" data-reveal>
+      <div class="absolute w-[80%] aspect-square rounded-full border-2 border-dashed border-fire/40 spin-slower"></div>
+      <div class="absolute w-[95%] aspect-square rounded-full border border-ink/10"></div>
+      <div id="sigImgWrap" class="relative w-[78%] max-w-[480px] aspect-square" style="transform-style:preserve-3d">
+        <img id="sigImg" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=900&auto=format&fit=crop" class="w-full h-full object-cover rounded-full border-[10px] border-ink shadow-card" alt="مشكل واحة الملكي">
+        <span class="absolute top-4 -right-2 bg-fire text-white font-mega px-5 py-2 rounded-full rotate-[8deg] shadow-fire text-lg">الأكثر طلباً</span>
+        <span class="absolute bottom-8 -left-2 bg-ink text-cream font-changa px-4 py-2 rounded-2xl -rotate-[6deg] flex items-center gap-2 text-sm"><span class="text-gold">★★★★★</span> 12,400 تقييم</span>
+        <span class="absolute top-1/2 -left-6 md:-left-10 w-16 h-16 md:w-20 md:h-20 bg-gold rounded-full grid place-items-center border-4 border-ink float"><svg width="30" height="30" viewBox="0 0 24 24" fill="#0A0A0A"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span>
+      </div>
+    </div>
+    <div>
+      <p data-reveal class="inline-flex items-center gap-2 bg-ink text-gold font-changa text-sm px-4 py-1.5 rounded-full mb-4">الطبق الأسطوري <span class="w-1.5 h-1.5 bg-fire rounded-full animate-pulse"></span> يُشوى 45 دقيقة</p>
+      <h2 data-reveal class="font-mega text-4xl md:text-6xl leading-tight">مشكل واحة <span class="text-fire">الملكي</span></h2>
+      <p data-reveal class="mt-4 text-ink/65 leading-relaxed">تاج المنيو بلا منازع: ريش غنم، تكة لحم، كباب حلبي، شيش طاووق — كلها على صينية واحدة ساخنة تصل إلى طاولتك وهي تِزّ على الفحم. تُقدّم مع خبز الصاج، الحمص باللحم، والثومية الملكية.</p>
+      <div data-reveal class="mt-5 flex flex-wrap gap-2 font-changa text-sm">
+        <span class="bg-white border border-ink/15 rounded-full px-3 py-1">ريش غنم</span><span class="bg-white border border-ink/15 rounded-full px-3 py-1">كباب حلبي</span><span class="bg-white border border-ink/15 rounded-full px-3 py-1">تكة لحم</span><span class="bg-white border border-ink/15 rounded-full px-3 py-1">شيش طاووق</span><span class="bg-ink text-gold rounded-full px-3 py-1">+ ثومية سرية</span>
+      </div>
+      <div data-reveal class="mt-7">
+        <p class="font-changa font-bold mb-3">اختر الحجم:</p>
+        <div class="grid grid-cols-3 gap-3 max-w-[480px]" id="sizeGroup">
+          <button data-size="عادي" data-price="85" class="size-btn border-2 border-ink/15 rounded-2xl p-3 md:p-4 text-center transition-all hover:border-ink"><p class="font-mega text-lg">عادي</p><p class="text-xs text-ink/50 font-changa">يكفي 1-2</p><p class="font-bold text-fire mt-1">85 د.ع</p></button>
+          <button data-size="ملكي" data-price="145" class="size-btn active border-2 border-ink/15 rounded-2xl p-3 md:p-4 text-center transition-all hover:border-ink relative"><span class="absolute -top-2.5 right-1/2 translate-x-1/2 bg-fire text-white text-[10px] font-bold px-2 py-0.5 rounded-full">الأشهر</span><p class="font-mega text-lg">ملكي</p><p class="text-xs opacity-60 font-changa">يكفي 3-4</p><p class="font-bold text-gold mt-1">145 د.ع</p></button>
+          <button data-size="عائلي" data-price="220" class="size-btn border-2 border-ink/15 rounded-2xl p-3 md:p-4 text-center transition-all hover:border-ink"><p class="font-mega text-lg">عائلي</p><p class="text-xs text-ink/50 font-changa">يكفي 6-8</p><p class="font-bold text-fire mt-1">220 د.ع</p></button>
+        </div>
+      </div>
+      <div data-reveal class="mt-7 flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-1 bg-white border-2 border-ink/10 rounded-2xl p-1.5">
+          <button id="sigMinus" class="w-10 h-10 rounded-xl bg-ink/5 hover:bg-ink hover:text-cream font-bold text-xl transition-colors">−</button>
+          <span id="sigQty" class="w-10 text-center font-mega text-xl">1</span>
+          <button id="sigPlus" class="w-10 h-10 rounded-xl bg-ink/5 hover:bg-ink hover:text-cream font-bold text-xl transition-colors">+</button>
+        </div>
+        <button id="sigAdd" class="magnetic btn-fire flex-1 min-w-[220px] bg-ink text-cream font-mega text-xl py-3.5 rounded-2xl flex items-center justify-center gap-3">أضف للسلة • <span id="sigPrice" class="text-gold">145 د.ع</span></button>
+      </div>
+      <div data-reveal class="mt-4 flex items-center gap-4 text-sm font-changa text-ink/60">
+        <span class="flex items-center gap-1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> توصيل خلال 35 دقيقة</span>
+        <span class="flex items-center gap-1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> يصلك ساخناً على الفحم</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="bg-ink border-y border-line">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-20">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      <div><p data-reveal class="font-anton tracking-[.3em] text-fire text-sm mb-2" dir="ltr">— HOW WE DO IT</p><h2 data-reveal class="font-mega text-4xl md:text-6xl">كيف نصنع <span class="shimmer">السحر؟</span></h2></div>
+      <p data-reveal class="text-cream/50 max-w-[360px] font-cairo">أربع خطوات فقط تفصل بين قطعة لحم نيئة وبين أفضل قضمة في حياتك.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div data-reveal class="step-card grain-card rounded-3xl p-7 border border-line">
+        <div class="flex items-start justify-between"><span class="step-icon w-14 h-14 rounded-2xl bg-fire/15 text-fire grid place-items-center transition-colors"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><path d="M6 17h12"/></svg></span><span class="step-num font-anton text-6xl outline-faint" dir="ltr">01</span></div>
+        <h4 class="font-mega text-2xl mt-6">اختيار اللحم</h4><p class="text-cream/55 mt-2 leading-relaxed text-[15px]">نختار يومياً أجود قطع العجل والغنم الطازجة من مزارع معتمدة — ولا نقبل بالمجمّد أبداً.</p>
+      </div>
+      <div data-reveal class="step-card grain-card rounded-3xl p-7 border border-line">
+        <div class="flex items-start justify-between"><span class="step-icon w-14 h-14 rounded-2xl bg-gold/15 text-gold grid place-items-center transition-colors"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></span><span class="step-num font-anton text-6xl outline-faint" dir="ltr">02</span></div>
+        <h4 class="font-mega text-2xl mt-6">التتبيلة السرية</h4><p class="text-cream/55 mt-2 leading-relaxed text-[15px]">11 نوع بهارات تُطحن طازجة يومياً وتُنقع مع اللحم 12 ساعة كاملة ليتشرب النكهة للعظم.</p>
+      </div>
+      <div data-reveal class="step-card grain-card rounded-3xl p-7 border border-line">
+        <div class="flex items-start justify-between"><span class="step-icon w-14 h-14 rounded-2xl bg-fire/15 text-fire grid place-items-center transition-colors"><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span><span class="step-num font-anton text-6xl outline-faint" dir="ltr">03</span></div>
+        <h4 class="font-mega text-2xl mt-6">الشوي على الفحم</h4><p class="text-cream/55 mt-2 leading-relaxed text-[15px]">فحم الغضى على حرارة 400 درجة، وتقليب مدروس كل 90 ثانية لقرمشة خارجية وطراوة داخلية.</p>
+      </div>
+      <div data-reveal class="step-card grain-card rounded-3xl p-7 border border-line">
+        <div class="flex items-start justify-between"><span class="step-icon w-14 h-14 rounded-2xl bg-gold/15 text-gold grid place-items-center transition-colors"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></span><span class="step-num font-anton text-6xl outline-faint" dir="ltr">04</span></div>
+        <h4 class="font-mega text-2xl mt-6">التقديم الملتهب</h4><p class="text-cream/55 mt-2 leading-relaxed text-[15px]">يصل طبقك وهو يزّ على صينية ساخنة مع دخان عطري — مشهد وصوت وريحة قبل الطعم.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="bg-coal overflow-hidden">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div><p data-reveal class="font-anton tracking-[.3em] text-gold text-sm mb-2" dir="ltr">— LIVE FROM THE GRILL</p><h2 data-reveal class="font-mega text-4xl md:text-6xl">من على النار <span class="text-fire">مباشرة</span></h2></div>
+    <div data-reveal class="flex items-center gap-3">
+      <button id="galPrev" class="magnetic w-12 h-12 rounded-full border border-white/20 grid place-items-center hover:bg-fire hover:border-fire transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+      <button id="galNext" class="magnetic w-12 h-12 rounded-full border border-white/20 grid place-items-center hover:bg-fire hover:border-fire transition-colors"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
+      <span class="font-changa text-cream/40 text-sm mr-2">اسحب للاستكشاف</span>
+    </div>
+  </div>
+  <div data-reveal class="pb-16 md:pb-24">
+    <div id="galTrack" class="gallery-scroll flex gap-4 overflow-x-auto px-4 md:px-8 pb-4" dir="ltr">
+      <!-- items injected pattern: keep static for speed -->
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group" dir="rtl"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-fire text-white text-xs font-bold px-3 py-1 rounded-full">شواء حي</span><p class="font-mega text-2xl mt-2">أسياخ على اللهب</p></figcaption></figure>
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group mt-0 md:mt-10" dir="rtl"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-gold text-ink text-xs font-bold px-3 py-1 rounded-full">الأشهر</span><p class="font-mega text-2xl mt-2">ريش الغنم الملكية</p></figcaption></figure>
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group" dir="rtl"><img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-white text-ink text-xs font-bold px-3 py-1 rounded-full">دجاج الفحم</span><p class="font-mega text-2xl mt-2">طاووق يتكلم عربي</p></figcaption></figure>
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group mt-0 md:mt-10" dir="rtl"><img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-fire text-white text-xs font-bold px-3 py-1 rounded-full">ستيك</span><p class="font-mega text-2xl mt-2">توماهوك مدخن</p></figcaption></figure>
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group" dir="rtl"><img src="https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-gold text-ink text-xs font-bold px-3 py-1 rounded-full">كبسة واحة</span><p class="font-mega text-2xl mt-2">رز بخاري باللحم</p></figcaption></figure>
+      <figure class="gal-item shrink-0 w-[78vw] sm:w-[380px] h-[480px] rounded-3xl overflow-hidden relative border border-line group mt-0 md:mt-10" dir="rtl"><img src="https://images.unsplash.com/photo-1551024506-0bccd828d307?q=80&w=700&auto=format&fit=crop" class="w-full h-full object-cover card-img" alt=""><div class="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent"></div><figcaption class="absolute bottom-0 p-6"><span class="bg-white text-ink text-xs font-bold px-3 py-1 rounded-full">الحلا</span><p class="font-mega text-2xl mt-2">خاتمة مسك</p></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS cream -->
+<section id="reviews" class="bg-cream text-ink relative overflow-hidden">
+  <div class="max-w-[1100px] mx-auto px-4 md:px-8 py-16 md:py-24 text-center relative">
+    <p data-reveal class="font-anton tracking-[.35em] text-fire text-sm mb-3" dir="ltr">— WALL OF LOVE —</p>
+    <h2 data-reveal class="font-mega mega-sm">وش قالوا <span class="outline-black">عنا؟</span></h2>
+    <div data-reveal class="mt-10 relative bg-ink text-cream rounded-[2rem] p-8 md:p-14 shadow-card overflow-hidden">
+      <span class="absolute top-6 right-8 font-anton text-[7rem] leading-none text-fire/20 select-none">”</span>
+      <div class="flex justify-center gap-1 text-gold text-xl mb-5" id="revStars">★★★★★</div>
+      <p id="revText" class="font-changa text-xl md:text-3xl leading-relaxed min-h-[90px] transition-opacity duration-300"></p>
+      <div class="mt-8 flex items-center justify-center gap-4">
+        <img id="revAvatar" src="" class="w-14 h-14 rounded-full border-[3px] border-fire object-cover" alt="">
+        <div class="text-right"><p id="revName" class="font-mega text-lg"></p><p id="revRole" class="text-cream/50 text-sm font-changa"></p></div>
+      </div>
+      <div class="mt-8 flex items-center justify-center gap-4">
+        <button id="revPrev" class="w-12 h-12 rounded-full border border-white/20 grid place-items-center hover:bg-fire hover:border-fire transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7 7 7-7 7"/></svg></button>
+        <div id="revDots" class="flex gap-2"></div>
+        <button id="revNext" class="w-12 h-12 rounded-full border border-white/20 grid place-items-center hover:bg-fire hover:border-fire transition-colors"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button>
+      </div>
+      <div class="absolute bottom-0 right-0 left-0 h-1.5 bg-white/10"><div id="revProgress" class="h-full bg-gradient-to-l from-fire to-gold w-0"></div></div>
+    </div>
+    <div data-reveal class="mt-6 flex flex-wrap justify-center gap-3 font-changa text-sm">
+      <span class="bg-white border border-ink/10 rounded-full px-4 py-2">Google 4.9 ★ (8.2K)</span>
+      <span class="bg-white border border-ink/10 rounded-full px-4 py-2">جاهز 4.8 ★ (21K)</span>
+      <span class="bg-ink text-gold rounded-full px-4 py-2">The Best Grill — جائزة التميز 2025</span>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVE -->
+<section id="reserve" class="bg-ink relative overflow-hidden">
+  <div class="absolute inset-0 opacity-15"><img src="https://images.unsplash.com/photo-1517244683847-7456b63c5969?q=80&w=1400&auto=format&fit=crop" class="w-full h-full object-cover" alt=""><div class="absolute inset-0 bg-gradient-to-b from-ink via-ink/60 to-ink"></div></div>
+  <div class="max-w-[1300px] mx-auto px-4 md:px-8 py-16 md:py-24 relative grid lg:grid-cols-5 gap-8">
+    <div class="lg:col-span-2 flex flex-col justify-center">
+      <p data-reveal class="font-anton tracking-[.3em] text-gold text-sm mb-3" dir="ltr">— BOOK YOUR FIRE —</p>
+      <h2 data-reveal class="font-mega text-5xl md:text-7xl leading-[1]">احجز<br><span class="text-fire glow-fire">تجربتك</span></h2>
+      <p data-reveal class="mt-5 text-cream/60 leading-relaxed">الطاولات المميزة بجانب الشواء الحي تُحجز بسرعة — خاصة الخميس والجمعة. احجز الآن واضمن مكانك قدام النار.</p>
+      <div data-reveal class="mt-7 space-y-3 font-changa">
+        <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4"><span class="w-12 h-12 rounded-xl bg-fire grid place-items-center text-white shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><div><p class="text-cream/50 text-sm">للحجوزات العاجلة</p><p class="font-bold text-lg" dir="ltr">رقم تجريبي غير متاح</p></div></div>
+        <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4"><span class="w-12 h-12 rounded-xl bg-gold grid place-items-center text-ink shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span><div><p class="text-cream/50 text-sm">ساعات العمل</p><p class="font-bold">يومياً 12 ظهراً — 12 منتصف الليل</p></div></div>
+        <div class="flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl p-4"><span class="w-12 h-12 rounded-xl bg-white/10 grid place-items-center text-cream shrink-0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><div><p class="text-cream/50 text-sm">العنوان</p><p class="font-bold">بغداد — عنوان تجريبي</p></div></div>
+      </div>
+    </div>
+    <div data-reveal class="lg:col-span-3 bg-cream text-ink rounded-[2rem] p-6 md:p-10 shadow-card relative overflow-hidden">
+      <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-l from-fire via-ember to-gold"></div>
+      <h3 class="font-mega text-3xl">نموذج الحجز</h3>
+      <p class="text-ink/55 font-changa text-sm mt-1">املأ البيانات وسيصلك تأكيد فوري + تذكرة حجز</p>
+      <form id="bookForm" class="mt-6 grid md:grid-cols-2 gap-4" novalidate>
+        <div><label class="font-changa font-bold text-sm mb-1.5 block">الاسم الكامل *</label><input id="bkName" type="text" placeholder="مثال: محمد العتيبي" class="w-full bg-white border-2 border-ink/10 rounded-xl px-4 py-3 font-changa transition-all"></div>
+        <div><label class="font-changa font-bold text-sm mb-1.5 block">رقم الجوال *</label><input id="bkPhone" type="tel" dir="ltr" placeholder="05xxxxxxxx" class="w-full bg-white border-2 border-ink/10 rounded-xl px-4 py-3 font-changa text-left transition-all"></div>
+        <div><label class="font-changa font-bold text-sm mb-1.5 block">التاريخ *</label><input id="bkDate" type="date" class="w-full bg-white border-2 border-ink/10 rounded-xl px-4 py-3 font-changa transition-all"></div>
+        <div>
+          <label class="font-changa font-bold text-sm mb-1.5 block">عدد الضيوف *</label>
+          <div class="flex items-center gap-2 bg-white border-2 border-ink/10 rounded-xl px-2 py-1.5">
+            <button type="button" id="gMinus" class="w-10 h-10 rounded-lg bg-ink text-cream font-bold text-xl hover:bg-fire transition-colors">−</button>
+            <span class="flex-1 text-center font-mega text-xl"><span id="guestNum">2</span> <span class="text-sm font-changa font-normal text-ink/50">ضيوف</span></span>
+            <button type="button" id="gPlus" class="w-10 h-10 rounded-lg bg-ink text-cream font-bold text-xl hover:bg-fire transition-colors">+</button>
+          </div>
+        </div>
+        <div class="md:col-span-2"><label class="font-changa font-bold text-sm mb-1.5 block">اختر الوقت *</label><div id="timeGrid" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div></div>
+        <div class="md:col-span-2"><label class="font-changa font-bold text-sm mb-1.5 block">نوع الجلسة</label><div class="grid grid-cols-3 gap-2" id="seatGroup">
+          <button type="button" data-seat="داخلية" class="seat-btn active border-2 border-ink rounded-xl py-3 font-changa font-bold text-sm bg-ink text-cream transition-all">داخلية مكيفة</button>
+          <button type="button" data-seat="بجانب الشواء" class="seat-btn border-2 border-ink/15 rounded-xl py-3 font-changa font-bold text-sm hover:border-ink transition-all">بجانب الشواء 🔥</button>
+          <button type="button" data-seat="خارجية" class="seat-btn border-2 border-ink/15 rounded-xl py-3 font-changa font-bold text-sm hover:border-ink transition-all">تراس خارجي</button>
+        </div></div>
+        <div class="md:col-span-2"><label class="font-changa font-bold text-sm mb-1.5 block">ملاحظات (اختياري)</label><textarea id="bkNotes" rows="2" placeholder="عيد ميلاد؟ طاولة لكرسي متحرك؟ أخبرنا..." class="w-full bg-white border-2 border-ink/10 rounded-xl px-4 py-3 font-changa transition-all resize-none"></textarea></div>
+        <button type="submit" class="magnetic btn-fire md:col-span-2 bg-fire text-white font-mega text-xl py-4 rounded-2xl shadow-fire flex items-center justify-center gap-3">تأكيد الحجز
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></button>
+        <p class="md:col-span-2 text-center text-xs text-ink/45 font-changa">بالضغط على تأكيد الحجز أنت توافق على سياسة الإلغاء قبل 3 ساعات • إلغاء مجاني</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section id="waha-cta" class="bg-fire relative overflow-hidden">
+  <div class="absolute inset-0 opacity-15" dir="ltr"><div class="marquee-track font-anton text-[10rem] leading-none text-ink whitespace-nowrap"><span class="px-4">HUNGRY? HUNGRY? HUNGRY? HUNGRY?&nbsp;</span><span class="px-4">HUNGRY? HUNGRY? HUNGRY? HUNGRY?&nbsp;</span></div></div>
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 py-14 md:py-20 relative flex flex-col lg:flex-row items-center justify-between gap-8">
+    <div data-reveal>
+      <h2 class="font-mega text-ink text-5xl md:text-7xl leading-none">جوعان؟<br>النار <span class="text-cream drop-shadow-[4px_4px_0_#0A0A0A]">شغالة الآن</span></h2>
+      <p class="font-changa text-ink/80 mt-3 font-bold">اطلب الآن ويوصلك ساخناً خلال 35 دقيقة — أو احجز وتعال عِش التجربة</p>
+    </div>
+    <div data-reveal class="flex flex-col sm:flex-row gap-3 shrink-0">
+      <button onclick="openCart()" class="magnetic bg-ink text-cream font-mega text-xl px-10 py-4 rounded-2xl hover:scale-105 transition-transform shadow-card">اطلب توصيل</button>
+      <a href="#reserve" class="magnetic bg-cream text-ink font-mega text-xl px-10 py-4 rounded-2xl border-4 border-ink hover:scale-105 transition-transform text-center">احجز طاولة</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-ink border-t border-line relative overflow-hidden">
+  <div class="max-w-[1400px] mx-auto px-4 md:px-8 pt-14 pb-8">
+    <div class="grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-4">
+        <div class="flex items-center gap-3"><span class="w-12 h-12 rounded-xl bg-gradient-to-br from-fire to-gold grid place-items-center"><svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg></span><div><p class="font-mega text-3xl leading-none">واحة</p><p class="font-anton text-[10px] tracking-[.4em] text-gold" dir="ltr">WAHA GRILL</p></div></div>
+        <p class="text-cream/50 mt-4 leading-relaxed text-sm">وجهة عشاق المشويات الأولى بتصميم تجريبي. نار حقيقية، لحم فاخر، وذكريات لا تُنسى.</p>
+        <div class="mt-5 flex gap-2">
+          <a href="#" class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 grid place-items-center hover:bg-fire hover:border-fire transition-colors" aria-label="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.2l7.3-8.3L1.6 2H8l4.4 5.9L18.9 2zm-1.1 18h1.7L7.1 3.9H5.3L17.8 20z"/></svg></a>
+          <a href="#" class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 grid place-items-center hover:bg-fire hover:border-fire transition-colors" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="#" class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 grid place-items-center hover:bg-fire hover:border-fire transition-colors" aria-label="TikTok"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.6 7.2a5.6 5.6 0 0 1-3.6-1.4V12a5.5 5.5 0 1 1-5.5-5.5c.3 0 .6 0 .9.1v3.1a2.4 2.4 0 1 0 1.6 2.3V1.5h3.1a5.6 5.6 0 0 0 3.5 3.4v2.3z"/></svg></a>
+          <a href="#" class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 grid place-items-center hover:bg-fire hover:border-fire transition-colors" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.4A8.5 8.5 0 1 1 21 11.5z"/></svg></a>
+        </div>
+      </div>
+      <div class="md:col-span-2"><p class="font-mega text-lg mb-4">روابط</p><ul class="space-y-2.5 text-cream/60 font-changa text-[15px]"><li><a href="#about" class="hover:text-fire transition-colors">قصتنا</a></li><li><a href="#menu" class="hover:text-fire transition-colors">المنيو</a></li><li><a href="#signature" class="hover:text-fire transition-colors">الطبق الملكي</a></li><li><a href="#reserve" class="hover:text-fire transition-colors">الحجز</a></li></ul></div>
+      <div class="md:col-span-3"><p class="font-mega text-lg mb-4">ساعات العمل</p><ul class="space-y-2.5 text-cream/60 font-changa text-[15px]"><li class="flex justify-between border-b border-white/10 pb-2"><span>السبت — الخميس</span><span class="text-cream" dir="ltr">12PM - 12AM</span></li><li class="flex justify-between border-b border-white/10 pb-2"><span>الجمعة</span><span class="text-cream" dir="ltr">4PM - 1AM</span></li><li class="flex justify-between"><span>التوصيل</span><span class="text-gold">حتى 11:30PM</span></li></ul></div>
+      <div id="waha-news" class="md:col-span-3"><p class="font-mega text-lg mb-4">عروض النار أول بأول</p><p class="text-cream/50 text-sm font-changa mb-3">اشترك واحصل على خصم 15% على أول طلب</p><form id="newsForm" class="flex gap-2"><input id="newsInput" type="email" placeholder="بريدك الإلكتروني" class="flex-1 min-w-0 bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-sm font-changa placeholder:text-cream/30"><button class="bg-fire hover:bg-ember transition-colors rounded-xl px-5 font-mega">اشترك</button></form><p class="text-cream/40 text-xs mt-3 font-changa flex items-center gap-1.5"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> انضم لـ 40,000 مشترك</p></div>
+    </div>
+    <div class="mt-10 select-none pointer-events-none text-center font-mega text-[clamp(4rem,15vw,12rem)] leading-none text-white/[.04]" dir="ltr">WAHA</div>
+    <div class="border-t border-white/10 pt-5 flex flex-col md:flex-row items-center justify-between gap-3 text-sm font-changa text-cream/40">
+      <p>© 2026 مطعم واحة للمشويات — جميع الحقوق محفوظة</p>
+      <p class="flex items-center gap-2">صُنع بشغف ونار <svg width="14" height="14" viewBox="0 0 24 24" fill="#FF3D00"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg> في العراق</p>
+    </div>
+  </div>
+</footer>
+</main>
+
+<!-- SUCCESS MODAL -->
+<div id="bookModal" class="fixed inset-0 z-[95] hidden items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeBookModal()"></div>
+  <div id="bookTicket" class="relative bg-cream text-ink rounded-[1.8rem] max-w-[440px] w-full overflow-hidden shadow-card">
+    <div class="bg-ink text-cream p-6 text-center relative overflow-hidden">
+      <div class="absolute inset-0 opacity-20"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover" alt=""></div>
+      <div class="relative"><span class="inline-grid place-items-center w-16 h-16 rounded-full bg-green-500 text-white mb-3"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h3 class="font-mega text-3xl">تم تأكيد حجزك!</h3><p class="text-cream/60 font-changa text-sm">النار بانتظارك — لا تتأخر</p></div>
+    </div>
+    <div class="p-6 ticket-edge bg-cream">
+      <div class="border-2 border-dashed border-ink/20 rounded-2xl p-5 space-y-3 font-changa">
+        <div class="flex justify-between"><span class="text-ink/50">رقم الحجز</span><span id="tRef" class="font-mega text-fire" dir="ltr">WAH-0000</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">الاسم</span><span id="tName" class="font-bold">—</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">التاريخ</span><span id="tDate" class="font-bold">—</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">الوقت</span><span id="tTime" class="font-bold" dir="ltr">—</span></div>
+        <div class="flex justify-between"><span class="text-ink/50">الضيوف • الجلسة</span><span class="font-bold"><span id="tGuests">2</span> • <span id="tSeat">داخلية</span></span></div>
+      </div>
+      <div class="mt-4 flex gap-2"><button onclick="closeBookModal()" class="flex-1 bg-ink text-cream font-mega py-3 rounded-xl">تم، شكراً</button><button onclick="closeBookModal();openCart()" class="flex-1 border-2 border-ink font-mega py-3 rounded-xl hover:bg-ink hover:text-cream transition-colors">اطلب مسبقاً</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div id="toasts" class="fixed bottom-6 right-1/2 translate-x-1/2 md:right-auto md:translate-x-0 md:left-6 z-[96] space-y-2 w-[calc(100%-2rem)] max-w-[360px]"></div>
+
+<!-- BACK TO TOP -->
+<button id="toTop" class="fixed bottom-6 right-6 z-[80] w-12 h-12 rounded-2xl bg-fire text-white grid place-items-center shadow-fire opacity-0 pointer-events-none transition-all hover:bg-ember" aria-label="للأعلى"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5m-7 7 7-7 7 7"/></svg></button>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+document.body.classList.add('cursor-on');
+
+/* ============ DATA ============ */
+let MENU = [];
+const REVIEWS = [
+  {text:'"أقسم بالله أفضل مشويات ذقتها في حياتي. الريش تذوب في الفم والصينية توصل وهي تزّ — تجربة كاملة مو بس أكل!"',name:'عبدالله المطيري',role:'ضيف دائم منذ 2015',avatar:'https://i.pravatar.cc/100?img=11'},
+  {text:'"أخذت العائلة كلها يوم الخميس، وحجزت بجانب الشواء الحي. العيال للحين يتكلمون عن الدخان والصوت والطعم. شكراً واحة!"',name:'نورة القحطاني',role:'تقييم عائلي • 6 ضيوف',avatar:'https://i.pravatar.cc/100?img=47'},
+  {text:'"كشيف، نادراً ما أنبهر بمطعم. لكن التتبيلة هنا شيء مختلف تماماً — متوازنة وعميقة. المشكل الملكي يستاهل كل ريال."',name:'شيف سلطان الحربي',role:'شيف تنفيذي • ضيف',avatar:'https://i.pravatar.cc/100?img=13'},
+  {text:'"طلبت توصيل وكنت خايف يوصل بارد — وصل ساخن والتغليف يحافظ على حرارة الفحم. الطاووق والثومية إدمان رسمي."',name:'فهد الشمري',role:'طلب توصيل • بغداد',avatar:'https://i.pravatar.cc/100?img=59'},
+];
+
+/* ============ LENIS SMOOTH ============ */
+let lenis;
+try{
+  lenis = new Lenis({ duration:1.15, smoothWheel:true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t)=>lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+}catch(e){ console.log('Lenis fallback'); }
+function scrollToTarget(sel){
+  const el = document.querySelector(sel);
+  if(!el) return;
+  if(lenis) lenis.scrollTo(el,{offset:-90,duration:1.4});
+  else el.scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const href=a.getAttribute('href');
+    if(href.length>1){ e.preventDefault(); closeMobile(); scrollToTarget(href); }
+  });
+});
+
+/* ============ CURSOR ============ */
+const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring'), cLabel=document.getElementById('cursor-label');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+(function cursorLoop(){ rx+=(mx-rx)*.16; ry+=(my-ry)*.16; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(cursorLoop); })();
+function bindCursor(){
+  document.querySelectorAll('a,button,.tab-btn,.gal-item,.menu-card,input,textarea').forEach(el=>{
+    el.onmouseenter=()=>{ ring.classList.add('hovered'); cLabel.textContent = el.classList.contains('gal-item')?'اسحب': el.tagName==='INPUT'?'اكتب':''; };
+    el.onmouseleave=()=>ring.classList.remove('hovered');
+  });
+}
+
+/* ============ EMBERS CANVAS ============ */
+const canvas=document.getElementById('embers'),ctx=canvas.getContext('2d');
+let particles=[];
+function resizeCanvas(){ canvas.width=canvas.offsetWidth; canvas.height=canvas.offsetHeight; }
+addEventListener('resize',resizeCanvas); resizeCanvas();
+class Ember{
+  constructor(){this.reset(true);}
+  reset(init){ this.x=Math.random()*canvas.width; this.y=init?Math.random()*canvas.height:canvas.height+10; this.s=Math.random()*3+1; this.vy=Math.random()*1.6+.4; this.vx=(Math.random()-.5)*.8; this.life=1; this.decay=Math.random()*.004+.002; this.hue=Math.random()*40+10; }
+  update(){ this.y-=this.vy; this.x+=this.vx+Math.sin(this.y*.02)*.4; this.life-=this.decay; if(this.life<=0||this.y<-10) this.reset(false); }
+  draw(){ ctx.beginPath(); ctx.arc(this.x,this.y,this.s*this.life,0,Math.PI*2); ctx.fillStyle=`hsla(${this.hue},100%,55%,${this.life})`; ctx.shadowBlur=12; ctx.shadowColor=`hsla(${this.hue},100%,50%,.9)`; ctx.fill(); }
+}
+for(let i=0;i<90;i++) particles.push(new Ember());
+(function emberLoop(){ ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(emberLoop); })();
+
+/* ============ PRELOADER ============ */
+const loadNum=document.getElementById('loadNum'),loadBar=document.getElementById('loadBar'),preloader=document.getElementById('preloader');
+let prog={v:0};
+gsap.set('.char',{yPercent:110});
+gsap.set(['#heroBadge','#heroDesc','#heroCta','#heroStrip'],{y:40,opacity:0});
+gsap.to(prog,{v:100,duration:2.1,ease:'power2.inOut',
+  onUpdate:()=>{ loadNum.textContent=Math.floor(prog.v)+'%'; loadBar.style.width=prog.v+'%'; },
+  onComplete:()=>{
+    gsap.timeline()
+      .to('#preloader .relative.z-10',{y:-30,opacity:0,duration:.5,ease:'power2.in'})
+      .to(preloader,{clipPath:'inset(0 0 100% 0)',duration:1,ease:'power4.inOut'},'-=.1')
+      .set(preloader,{display:'none'})
+      .to('#heroBg',{scale:1,duration:1.6,ease:'power2.out'},'-=1')
+      .to('.char',{yPercent:0,duration:1,ease:'expo.out',stagger:.08},'-=1.4')
+      .to('#heroBadge',{y:0,opacity:1,duration:.7,ease:'power3.out'},'-=.9')
+      .to('#heroDesc',{y:0,opacity:1,duration:.7,ease:'power3.out'},'-=.6')
+      .to('#heroCta',{y:0,opacity:1,duration:.7,ease:'power3.out'},'-=.5')
+      .to('#heroStrip',{y:0,opacity:1,duration:.7,ease:'power3.out'},'-=.4');
+    ScrollTrigger.refresh();
+  }
+});
+
+/* ============ NAV / PROGRESS / TOTOP ============ */
+const navInner=document.getElementById('navInner'),progressBar=document.getElementById('progressBar'),toTop=document.getElementById('toTop');
+function onScroll(){
+  const y=window.scrollY;
+  if(y>60){ navInner.classList.add('shadow-card'); navInner.style.background='rgba(10,10,10,.92)'; }
+  else{ navInner.classList.remove('shadow-card'); navInner.style.background='rgba(10,10,10,.6)'; }
+  const h=document.documentElement.scrollHeight-innerHeight;
+  progressBar.style.transform=`scaleX(${h>0?y/h:0})`;
+  if(y>600){ toTop.classList.remove('opacity-0','pointer-events-none'); } else{ toTop.classList.add('opacity-0','pointer-events-none'); }
+}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+toTop.onclick=()=>{ if(lenis) lenis.scrollTo(0,{duration:1.4}); else scrollTo({top:0,behavior:'smooth'}); };
+
+/* mobile menu */
+const mobileMenu=document.getElementById('mobileMenu'),menuBtn=document.getElementById('menuBtn');
+let mobOpen=false;
+menuBtn.onclick=()=>mobOpen?closeMobile():openMobile();
+function openMobile(){ mobOpen=true; mobileMenu.classList.remove('hidden'); gsap.fromTo(mobileMenu,{opacity:0},{opacity:1,duration:.35}); gsap.fromTo('.mob-link',{x:60,opacity:0},{x:0,opacity:1,duration:.6,stagger:.08,ease:'power3.out'}); if(lenis)lenis.stop(); }
+function closeMobile(){ if(!mobOpen)return; mobOpen=false; gsap.to(mobileMenu,{opacity:0,duration:.3,onComplete:()=>mobileMenu.classList.add('hidden')}); if(lenis)lenis.start(); }
+
+/* ============ GSAP REVEALS ============ */
+gsap.utils.toArray('[data-reveal]').forEach(el=>{
+  gsap.fromTo(el,{y:50,opacity:0},{y:0,opacity:1,duration:1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+});
+gsap.utils.toArray('[data-parallax]').forEach(img=>{
+  gsap.fromTo(img,{yPercent:-10},{yPercent:10,ease:'none',scrollTrigger:{trigger:img.parentElement,start:'top bottom',end:'bottom top',scrub:true}});
+});
+gsap.to('#heroLatin',{xPercent:8,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('#heroBg',{yPercent:14,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+/* counters */
+gsap.utils.toArray('[data-count]').forEach(el=>{
+  const target=+el.dataset.count;
+  ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{
+    gsap.fromTo(el,{innerText:0},{innerText:target,duration:1.8,ease:'power2.out',snap:{innerText:1},onUpdate:function(){el.textContent=Math.floor(+el.textContent);}});
+  }});
+});
+gsap.utils.toArray('.bar-anim').forEach(bar=>{
+  ScrollTrigger.create({trigger:bar,start:'top 92%',once:true,onEnter:()=>gsap.to(bar,{width:bar.dataset.w,duration:1.4,ease:'power3.out'})});
+});
+
+/* magnetic */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{ const r=btn.getBoundingClientRect(); gsap.to(btn,{x:(e.clientX-r.left-r.width/2)*.25,y:(e.clientY-r.top-r.height/2)*.25,duration:.4}); });
+  btn.addEventListener('mouseleave',()=>gsap.to(btn,{x:0,y:0,duration:.5,ease:'elastic.out(1,.4)'}));
+});
+
+/* ============ MENU RENDER ============ */
+const menuGrid=document.getElementById('menuGrid'),menuEmpty=document.getElementById('menuEmpty');
+let activeFilter='all',searchQ='';
+function spicyIcons(n){ if(!n)return ''; return '<span class="flex gap-0.5">'+('<svg width="13" height="13" viewBox="0 0 24 24" fill="#FF3D00"><path d="M12 2C13.5 6 10 8.5 10 12a4.5 4.5 0 009 0c0-1.2-.6-2.4-1.2-3.4C19.5 9.7 21 11.8 21 14.5A8.5 8.5 0 014 14.5C4 9.5 8 6 12 2Z"/></svg>').repeat(n)+'</span>'; }
+function renderMenu(){
+  const list=MENU.filter(i=>(activeFilter==='all'||i.category===activeFilter)&&i.name.toLowerCase().includes(searchQ.toLowerCase()));
+  menuEmpty.classList.toggle('hidden',list.length>0);
+  menuGrid.replaceChildren();
+  for(const i of list){
+    const card=document.createElement('article');card.className='waha-menu-card';
+    const image=document.createElement('img');image.loading='lazy';image.alt='صورة تعبيرية للمشويات';image.src='https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop';
+    const info=document.createElement('div');info.className='info';
+    const title=document.createElement('h3'),description=document.createElement('p'),price=document.createElement('strong');
+    title.textContent=i.name;description.textContent=i.description||'';price.textContent=Number(i.price_iqd).toLocaleString('ar-IQ')+' د.ع';
+    info.append(title,description,price);card.append(image,info);menuGrid.append(card);
+  }
+}
+function setupTabs(items){
+  const tabs=document.getElementById('tabs');tabs.replaceChildren();
+  const all=document.createElement('button');all.textContent='الكل 🔥';all.dataset.filter='all';tabs.append(all);
+  for(const category of new Set(items.map(i=>i.category))){const b=document.createElement('button');b.textContent=category;b.dataset.filter=category;tabs.append(b);}
+  tabs.querySelectorAll('button').forEach(b=>{b.className='tab-btn font-changa font-bold px-5 md:px-6 py-2.5 rounded-full border border-white/15 bg-white/5 text-sm md:text-base';if(b.dataset.filter===activeFilter)b.classList.add('active');b.onclick=()=>{tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeFilter=b.dataset.filter;renderMenu();};});
+}
+document.getElementById('menuSearch').addEventListener('input',e=>{searchQ=e.target.value.trim();renderMenu();});
+renderMenu();
+
+/* ============ CART ============ */
+let cart={};
+const cartDrawer=document.getElementById('cartDrawer'),cartOverlay=document.getElementById('cartOverlay'),cartItems=document.getElementById('cartItems'),cartCount=document.getElementById('cartCount');
+function openCart(){ cartDrawer.classList.remove('-translate-x-full'); cartOverlay.classList.remove('opacity-0','pointer-events-none'); if(lenis)lenis.stop(); }
+function closeCart(){ cartDrawer.classList.add('-translate-x-full'); cartOverlay.classList.add('opacity-0','pointer-events-none'); if(lenis)lenis.start(); }
+document.getElementById('cartBtn').onclick=openCart;
+document.getElementById('cartClose').onclick=closeCart;
+cartOverlay.onclick=closeCart;
+function addToCart(id,btn,qty=1,customName=null,customPrice=null){
+  const item=MENU.find(i=>i.id===id);
+  const key=customName?customName+customPrice:id;
+  if(!cart[key]) cart[key]={...item,name:customName||item.name,price:customPrice||item.price,qty:0,key};
+  cart[key].qty+=qty;
+  updateCart();
+  const label=customName||item.name;
+  toast(`تمت إضافة "${label}" للسلة`,'success');
+  if(btn){ gsap.fromTo(btn,{scale:.85},{scale:1,duration:.4,ease:'elastic.out(1,.5)'}); flyToCart(btn); }
+  gsap.fromTo(cartCount,{scale:1.6},{scale:1,duration:.5,ease:'elastic.out(1,.4)'});
+}
+function flyToCart(fromEl){
+  try{
+    const card=fromEl.closest('article,div');
+    const img=card?card.querySelector('img'):null;
+    const target=document.getElementById('cartBtn').getBoundingClientRect();
+    const dot2=document.createElement('div');
+    dot2.style.cssText=`position:fixed;z-index:999;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,#FFB800,#FF3D00);box-shadow:0 0 20px #FF3D00;pointer-events:none;`;
+    const r=fromEl.getBoundingClientRect(); dot2.style.left=(r.left+r.width/2)+'px'; dot2.style.top=(r.top)+'px';
+    document.body.appendChild(dot2);
+    gsap.to(dot2,{left:target.left+target.width/2,top:target.top+target.height/2,scale:.3,duration:.8,ease:'power2.in',onComplete:()=>dot2.remove()});
+  }catch(e){}
+}
+function changeQty(key,d){
+  if(!cart[key])return; cart[key].qty+=d;
+  if(cart[key].qty<=0) delete cart[key];
+  updateCart();
+}
+function updateCart(){
+  const keys=Object.keys(cart);
+  const count=keys.reduce((s,k)=>s+cart[k].qty,0);
+  const total=keys.reduce((s,k)=>s+cart[k].qty*cart[k].price,0);
+  cartCount.textContent=count;
+  cartCount.style.transform=count>0?'scale(1)':'scale(0)';
+  document.getElementById('cartSubtotal').textContent=total+' د.ع';
+  document.getElementById('cartTotal').textContent=total+' د.ع';
+  if(keys.length===0){
+    cartItems.innerHTML=`<div class="h-full flex flex-col items-center justify-center text-center py-16"><span class="w-20 h-20 rounded-3xl bg-white/5 border border-line grid place-items-center text-cream/30 mb-4"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></span><p class="font-mega text-xl">سلتك فاضية</p><p class="text-cream/45 text-sm font-changa mt-1">النار شغالة واللحم ينتظرك...</p><button onclick="closeCart();scrollToTarget('#menu')" class="mt-5 bg-fire text-white font-changa font-bold px-6 py-2.5 rounded-xl">تصفح المنيو</button></div>`;
+    return;
+  }
+  cartItems.innerHTML=keys.map(k=>{const i=cart[k];return `
+    <div class="flex gap-3 bg-ink border border-line rounded-2xl p-3">
+      <img src="${i.img}" class="w-[70px] h-[70px] rounded-xl object-cover shrink-0" alt="">
+      <div class="flex-1 min-w-0"><p class="font-bold font-changa truncate">${i.name}</p><p class="text-gold font-mega">${i.price} د.ع</p>
+        <div class="mt-2 flex items-center justify-between">
+          <div class="flex items-center gap-2 bg-smoke rounded-lg p-1"><button onclick="changeQty('${k}',-1)" class="w-7 h-7 rounded-md bg-white/10 hover:bg-fire font-bold transition-colors">−</button><span class="w-6 text-center font-bold text-sm">${i.qty}</span><button onclick="changeQty('${k}',1)" class="w-7 h-7 rounded-md bg-white/10 hover:bg-fire font-bold transition-colors">+</button></div>
+          <button onclick="changeQty('${k}',-999)" class="text-cream/30 hover:text-fire transition-colors text-xs font-changa">إزالة</button>
+        </div>
+      </div>
+    </div>`;}).join('');
+}
+updateCart();
+document.getElementById('checkoutBtn').onclick=()=>toast('الطلب غير متاح في النسخة التجريبية','info');
+
+/* ============ SIGNATURE ============ */
+let sigSize='ملكي',sigPrice=145,sigQ=1;
+const sigPriceEl=document.getElementById('sigPrice'),sigQtyEl=document.getElementById('sigQty');
+function refreshSig(){ gsap.fromTo(sigPriceEl,{scale:1.3,color:'#FF3D00'},{scale:1,color:'#FFB800',duration:.5}); sigPriceEl.textContent=(sigPrice*sigQ)+' د.ع'; sigQtyEl.textContent=sigQ; }
+document.querySelectorAll('#sizeGroup .size-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#sizeGroup .size-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  sigSize=b.dataset.size; sigPrice=+b.dataset.price; refreshSig();
+});
+document.getElementById('sigPlus').onclick=()=>{ if(sigQ<10)sigQ++; refreshSig(); };
+document.getElementById('sigMinus').onclick=()=>{ if(sigQ>1)sigQ--; refreshSig(); };
+document.getElementById('sigAdd').onclick=function(){ addToCart(1,this,sigQ,`مشكل واحة (${sigSize})`,sigPrice); };
+/* tilt */
+const sigWrap=document.getElementById('sigImgWrap');
+if(matchMedia('(pointer:fine)').matches){
+  sigWrap.addEventListener('mousemove',e=>{ const r=sigWrap.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5; gsap.to(sigWrap,{rotateY:x*18,rotateX:-y*18,duration:.5}); });
+  sigWrap.addEventListener('mouseleave',()=>gsap.to(sigWrap,{rotateX:0,rotateY:0,duration:.8,ease:'elastic.out(1,.5)'}));
+}
+
+/* ============ GALLERY DRAG ============ */
+const gal=document.getElementById('galTrack');
+let isDown=false,startX=0,startScroll=0;
+gal.addEventListener('pointerdown',e=>{isDown=true;startX=e.clientX;startScroll=gal.scrollLeft;gal.setPointerCapture(e.pointerId);});
+gal.addEventListener('pointermove',e=>{ if(!isDown)return; gal.scrollLeft=startScroll-(e.clientX-startX); });
+['pointerup','pointerleave','pointercancel'].forEach(ev=>gal.addEventListener(ev,()=>isDown=false));
+document.getElementById('galNext').onclick=()=>gal.scrollBy({left:-400,behavior:'smooth'});
+document.getElementById('galPrev').onclick=()=>gal.scrollBy({left:400,behavior:'smooth'});
+
+/* ============ REVIEWS SLIDER ============ */
+let revIdx=0,revTimer=null;
+const revText=document.getElementById('revText'),revName=document.getElementById('revName'),revRole=document.getElementById('revRole'),revAvatar=document.getElementById('revAvatar'),revDots=document.getElementById('revDots'),revProgress=document.getElementById('revProgress');
+revDots.innerHTML=REVIEWS.map((_,i)=>`<button data-i="${i}" class="rdot w-2.5 h-2.5 rounded-full bg-white/20 transition-all"></button>`).join('');
+document.querySelectorAll('.rdot').forEach(d=>d.onclick=()=>showRev(+d.dataset.i));
+function showRev(i){
+  revIdx=(i+REVIEWS.length)%REVIEWS.length;
+  gsap.to([revText,revName],{opacity:0,y:10,duration:.25,onComplete:()=>{
+    const r=REVIEWS[revIdx];
+    revText.textContent=r.text; revName.textContent=r.name; revRole.textContent=r.role; revAvatar.src=r.avatar;
+    gsap.to([revText,revName],{opacity:1,y:0,duration:.5,ease:'power3.out'});
+  }});
+  document.querySelectorAll('.rdot').forEach((d,di)=>{ d.style.width=di===revIdx?'28px':'10px'; d.style.background=di===revIdx?'#FF3D00':'rgba(255,255,255,.2)'; });
+  restartRevTimer();
+}
+function restartRevTimer(){
+  clearInterval(revTimer);
+  gsap.fromTo(revProgress,{width:'0%'},{width:'100%',duration:5.5,ease:'none'});
+  revTimer=setTimeout(()=>showRev(revIdx+1),5500);
+}
+document.getElementById('revNext').onclick=()=>showRev(revIdx+1);
+document.getElementById('revPrev').onclick=()=>showRev(revIdx-1);
+revText.textContent=REVIEWS[0].text; revName.textContent=REVIEWS[0].name; revRole.textContent=REVIEWS[0].role; revAvatar.src=REVIEWS[0].avatar;
+showRev(0);
+
+/* ============ RESERVATION ============ */
+const TIMES=['12:30 PM','02:00 PM','04:00 PM','06:00 PM','07:30 PM','09:00 PM','10:30 PM','11:30 PM'];
+let selTime='',selSeat='داخلية',guests=2;
+const timeGrid=document.getElementById('timeGrid');
+timeGrid.innerHTML=TIMES.map(t=>`<button type="button" data-t="${t}" class="time-pill border-2 border-ink/15 rounded-xl py-2.5 font-changa font-bold text-sm hover:border-ink transition-all" dir="ltr">${t}</button>`).join('');
+document.querySelectorAll('.time-pill').forEach(b=>b.onclick=()=>{document.querySelectorAll('.time-pill').forEach(x=>x.classList.remove('active'));b.classList.add('active');selTime=b.dataset.t;});
+document.querySelectorAll('.seat-btn').forEach(b=>b.onclick=()=>{document.querySelectorAll('.seat-btn').forEach(x=>{x.classList.remove('active','bg-ink','text-cream','border-ink');x.classList.add('border-ink/15');});b.classList.add('active','bg-ink','text-cream','border-ink');b.classList.remove('border-ink/15');selSeat=b.dataset.seat;});
+document.getElementById('gPlus').onclick=()=>{if(guests<20)guests++;document.getElementById('guestNum').textContent=guests;};
+document.getElementById('gMinus').onclick=()=>{if(guests>1)guests--;document.getElementById('guestNum').textContent=guests;};
+const bkDate=document.getElementById('bkDate');
+bkDate.min=new Date().toISOString().split('T')[0];
+document.getElementById('bookForm').addEventListener('submit',e=>{e.preventDefault();toast('الحجز غير متاح في النسخة التجريبية','info');});
+function closeBookModal(){ const m=document.getElementById('bookModal'); m.classList.add('hidden'); m.classList.remove('flex'); if(lenis)lenis.start(); }
+function shake(sel){ gsap.fromTo(sel,{x:-8},{x:0,duration:.5,ease:'elastic.out(1,.3)'}); document.querySelector(sel).style.borderColor='#ef4444'; setTimeout(()=>document.querySelector(sel).style.borderColor='',1500); }
+
+/* ============ NEWSLETTER + TOAST ============ */
+document.getElementById('newsForm').addEventListener('submit',e=>{e.preventDefault();toast('الاشتراك غير متاح في النسخة التجريبية','info');});
+function toast(msg,type='info'){
+  const box=document.getElementById('toasts');
+  const colors={success:'border-green-500/50',error:'border-red-500/50',info:'border-gold/50'};
+  const icons={success:'<span class="w-8 h-8 rounded-full bg-green-500 grid place-items-center shrink-0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg></span>',
+    error:'<span class="w-8 h-8 rounded-full bg-red-500 grid place-items-center shrink-0 font-bold">!</span>',
+    info:'<span class="w-8 h-8 rounded-full bg-gold grid place-items-center shrink-0 text-ink font-bold">i</span>'};
+  const el=document.createElement('div');
+  el.className=`flex items-center gap-3 bg-ink/95 backdrop-blur border ${colors[type]} rounded-2xl px-4 py-3 shadow-card font-changa text-sm`;
+  el.innerHTML=`${icons[type]}<span>${msg}</span>`;
+  box.appendChild(el);
+  gsap.fromTo(el,{y:20,opacity:0,scale:.95},{y:0,opacity:1,scale:1,duration:.45,ease:'back.out(1.4)'});
+  setTimeout(()=>gsap.to(el,{y:10,opacity:0,duration:.4,onComplete:()=>el.remove()}),3400);
+}
+
+/* esc closes */
+addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeCart(); closeMobile(); closeBookModal(); } });
+
+bindCursor();
+window.openCart=openCart; window.closeCart=closeCart; window.closeBookModal=closeBookModal; window.scrollToTarget=scrollToTarget; window.addToCart=addToCart; window.changeQty=changeQty; window.wahaReady=true;
+</script>
+<script type="module">
+import {getRestaurantSite} from './farhood-api.mjs';
+const gate=document.getElementById('waha-gate');
+try {
+  if(!window.gsap || !window.ScrollTrigger || !window.tailwind || !window.wahaReady) throw new Error('تعذر تحميل مكونات التصميم. تحقق من اتصال الإنترنت وحاول مجدداً.');
+  const data=await getRestaurantSite({projectUrl:'https://afjeapvyvreutpiispev.supabase.co',publishableKey:'sb_publishable_GuEDfAxfbfPpThlfhD2Y2A_Emi2M835',slug:'waha-demo'});
+  if(data.status!=='available'){gate.textContent='الموقع غير متاح حالياً. يرجى التواصل مع إدارة المطعم.';}
+  else {MENU=data.items;setupTabs(MENU);renderMenu();gate.remove();}
+} catch(error){gate.textContent='تعذر تحميل موقع واحة. تحقق من الاتصال وحاول مجدداً.';}
+</script>
+</body>
+</html>
