@@ -12,3 +12,9 @@
 .site-brand-image{width:46px;height:46px;object-fit:contain;border-radius:8px;background:#fff}
 .site-preview-actions{display:flex;align-items:center;gap:14px;margin-top:22px;flex-wrap:wrap}.site-preview-actions span{font-size:11px;color:#85988c}.preview-panel{border:1px solid #dfe9e2;border-radius:14px;overflow:hidden;margin:22px 0;background:white}.preview-bar{padding:15px 20px;display:flex;justify-content:space-between;align-items:center;gap:15px;background:#f1f8f3}.preview-bar b,.preview-bar small{display:block}.preview-bar small{color:#82968a;font-size:10px;margin-top:4px;line-height:1.7}.preview-panel .restaurant-site{min-height:0}.preview-panel .site-hero{min-height:300px}.preview-panel .site-hero-copy{padding:35px 10%}.preview-panel .site-hero-image,.preview-panel .site-image-placeholder{min-height:300px}.preview-panel .site-menu{padding-top:45px;padding-bottom:45px}@media(max-width:700px){.preview-bar{align-items:start;flex-direction:column}.preview-panel .site-hero-image,.preview-panel .site-image-placeholder{min-height:200px}}
 .plan-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px}.plan-card{border:1px solid #e4eee7;background:#fbfdfb;border-radius:12px;padding:18px}.plan-card h3{margin:0 0 10px;font-size:15px}.plan-card strong{display:block;color:#267c53;font-size:19px;text-align:right}.plan-card small{color:#92a297}.plan-card ul{padding-right:18px;color:#637b6d;font-size:12px;line-height:2;min-height:35px}.plan-card button{width:100%}.plan-request-heading{padding:0 0 18px}.plan-request-heading p{line-height:1.8}
+
+/* Platform updates feed in the manager dashboard */
+.updates-list article { border-bottom: 1px solid rgba(255,255,255,.08); padding: 10px 0; }
+.updates-list article:last-child { border-bottom: none; }
+.updates-list article p { margin: 4px 0; color: inherit; opacity: .75; font-size: 14px; }
+.updates-list article small { opacity: .5; }
